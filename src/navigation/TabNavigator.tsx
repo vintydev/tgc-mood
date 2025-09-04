@@ -5,7 +5,8 @@ import { eTabRoute } from "../shared/types/eRoutes";
 import { tTabStackParamList } from "./NavigationTypes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomLinearGradient from "../shared/components/CustomLinearGradient";
-import { tabBgWithOpacity } from "../shared/utilities/tabUtils";
+import { tabBgWithOpacity, getTabIcon } from "../shared/utilities/tabUtils";
+import MoodStatisticsScreen from "../screens/MoodStatisticsScreen";
 
 
 const Tab = createBottomTabNavigator<tTabStackParamList>();
@@ -19,6 +20,7 @@ export default function TabNavigator() {
             initialRouteName={eTabRoute.MoodTracker}
             screenOptions={({ route, navigation }) => ({
                 headerShown: false,
+                tabBarIcon: ({ focused, color, size }) => getTabIcon(route.name, focused, color, size),
                 tabBarStyle: tabBgWithOpacity(0.7),
                 tabBarBackground: () => (
                     <CustomLinearGradient
@@ -29,7 +31,7 @@ export default function TabNavigator() {
                 ),
                 tabBarActiveTintColor: '#6200ee',
                 tabBarInactiveTintColor: '#222222',
-                tabBarLabelStyle: { fontSize: 12 },
+                tabBarLabelStyle: { fontSize: 12, fontFamily: 'SF Pro Bold', uppercase: false },
             })}
 
         >
@@ -38,11 +40,12 @@ export default function TabNavigator() {
                 component={MoodTrackerScreen}
                 options={{ title: 'Mood Tracker' }}
             />
-            {/* <Tab.Screen
+            <Tab.Screen
                 name={eTabRoute.Statistics}
-                component={StatisticsScreen}
+                component={MoodStatisticsScreen} // Placeholder, replace with actual StatisticsScreen when available
                 options={{ title: 'Statistics' }}
             />
+            {/*
             <Tab.Screen
                 name={eTabRoute.Profile}
                 component={ProfileScreen}

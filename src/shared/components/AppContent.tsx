@@ -6,17 +6,16 @@ import RootNavigator from "../../navigation/RootNavigator";
 function AppContent(): React.JSX.Element {
     return (
         <View style={{ flex: 1 }}>
-
             {!isiOS() && ( // Only show status bar on Android for better appearance, ios already handles it natively
-                <StatusBar
+                (<StatusBar
                     barStyle="dark-content"
                     backgroundColor="transparent"
                     translucent
-                />
+                />)
             )}
             <RootNavigator />
         </View>
-    )
+    );
 
 }
 export default AppContent;

@@ -68,7 +68,7 @@ export async function saveEntryAsync(mood: eMoodType): Promise<void>
     if (!mood) return;
 
     // Load previous entry to determine trend direction, else null if none exists
-    const previousEntry = await LoadPreviousEntryAsync() ?? null;
+    const previousEntry = (await LoadPreviousEntryAsync()) ?? null;
 
     // Calculate trend direction based on new mood and previous entry's mood
     const direction = await calculateTrendDirection(mood, previousEntry?.selectedMood);
