@@ -9,6 +9,7 @@ import { FlatList } from 'react-native';
 // Composite props for accessing both tab and root navigation routes
 type tProps = tCompositeTabScreenProps<eTabRoute.MoodTracker>;
 
+
 function MoodTrackerScreen({ navigation, route }: tProps): JSX.Element {
     return (
         <CustomLinearGradient
@@ -18,7 +19,6 @@ function MoodTrackerScreen({ navigation, route }: tProps): JSX.Element {
             style={{ flex: 1 }}
         >
 
-
             <View style={styles.container}>
                 <Text style={styles.welcomeFont}>Welcome, Vincenzo!</Text>
             </View>
@@ -26,6 +26,7 @@ function MoodTrackerScreen({ navigation, route }: tProps): JSX.Element {
     )
 }
 
+// Styles at bottom for better readability
 const styles = StyleSheet.create({
     container: {
         flex: 1,
