@@ -33,7 +33,50 @@ export default function CustomEmojiButton(props: tCustomEmojiButtonProps)
     const colorScheme: ColorSchemeName = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
 
-    // Animation state
+    // Animation state (useref to persist values across renders)
     const scale = useRef(new Animated.Value(1)).current;
+    const opacity = useRef(new Animated.Value(1)).current;
 
+}
+
+
+// Component related logic (animations)
+
+// Trigger animation to pressed state
+function animateIn(scale: Animated.Value, opacity: Animated.Value)
+{
+    // Parallelly animate scale and opacity to pressed values
+    Animated.parallel([
+
+        // Scale down
+        Animated.timing(scale, {
+            toValue: SCALE_PRESSED,
+            duration: ANIMATION_DURATION,
+            useNativeDriver: true,
+        }),
+
+        // Decrease opacity
+        Animated.timing(opacity, {
+            toValue: OPACITY_PRESSED,
+            duration: ANIMATION_DURATION,
+            useNativeDriver: true,
+        }),
+    ]).start();
+}
+
+// Revert animation to original state
+function animateOut(scale: Animated.Value, opacity: Animated.Value, callBack?: () => void)
+{
+    Animated.parallel([
+        Animated.timing(scale, {
+            toValue: 1,
+            duration: ANIMATION_DURATION,
+            useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+            toValue: 1,
+            duration: ANIMATION_DURATION,
+            useNativeDriver: true,
+        }),
+    ]).start(() => callBack ? callBack(): null); // Call callback after animation completes if provided
 }
