@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import tMoodEntry from '../types/tMoodEntry';
-import eMoodType from '../types/eMoodType';
+import tMoodEntry from '../types/mood/tMoodEntry';
+import eMoodType from '../types/mood/eMoodType';
 import { generateUniqueID } from './generateID';
-import eTrendDirection from '../types/eTrendDirection';
+import eTrendDirection from '../types/mood/eTrendDirection';
 
 export const MOOD_KEY = 'moodEntries';
 
@@ -10,28 +10,31 @@ export const MOOD_KEY = 'moodEntries';
 // Function to load mood entries from AsyncStorage 
 export async function LoadEntriesAsync(): Promise<tMoodEntry[]> 
 {
-    try 
-    {
+    try {
+
         // Attempt to load the entries from storage in JSON format
-        const rawJSON = await AsyncStorage.getItem(MOOD_KEY);
+        const rawJSON = await AsyncStorage.getItem(MOOD_KEY)
 
         // If none are found, return empty array
         if (!rawJSON) return [];
 
         // Collect parsed entries
-        const parsedEntries: unknown = JSON.parse(rawJSON); // Unknown for now
+        const parsedEntries: tMoodEntry[] = JSON.parse(rawJSON); 
 
-        // If parsed entries is an array (reduce possibility of runtime error), return it as tMoodEntry[]
+        // If parsed entries is an array, convert date strings back to Date objects and return
         if (Array.isArray(parsedEntries)) 
         {
-            return parsedEntries as tMoodEntry[];
+            // Convert date strings back to Date objects
+            await convertBackToDate(parsedEntries);
+
+            // Return the parsed entries
+            return parsedEntries;
         }
 
         // Else, return empty array
         return [];
     }
-    catch (e) 
-    {
+    catch (e) {
         console.error("Error loading entries from storage: ", e);
         return []; // Return empty array on error
     }
@@ -40,30 +43,30 @@ export async function LoadEntriesAsync(): Promise<tMoodEntry[]>
 // Load the previous entry (most recent by dateCreated) or null if none exist
 export async function LoadPreviousEntryAsync(): Promise<tMoodEntry | null> 
 {
-    try 
-    {
+    try {
         // Get entries
         const entries = await LoadEntriesAsync();
+
+        console.log("All entries loaded for previous entry check: ", entries);
 
         // If no entries, early return null
         if (entries.length === 0) return null;
 
         // Sort entries by dateCreated descending to get the most recent entry
-        const sortedEntries = entries.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime());
+        const sortedEntries = entries.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
 
         // Return the most recent entry (first in sorted array, since sorted descending)
         return sortedEntries[0];
     }
-    catch (e) 
-    {
+    catch (e) {
         console.error("Error loading previous entry: ", e);
         return null;
     }
 }
 
 // Save a new mood entry, calculating trend direction based on previous entry if it exists
-export async function saveEntryAsync(mood: eMoodType): Promise<void>
- {
+export async function saveEntryAsync(mood: eMoodType): Promise<void> 
+{
     // Early return if entry is null or otherwise invalid
     if (!mood) return;
 
@@ -73,15 +76,15 @@ export async function saveEntryAsync(mood: eMoodType): Promise<void>
     // Calculate trend direction based on new mood and previous entry's mood
     const direction = await calculateTrendDirection(mood, previousEntry?.selectedMood);
 
-    const newEntry: tMoodEntry = {
+    const newEntry: tMoodEntry = 
+    {
         id: generateUniqueID(),
         selectedMood: mood,
         dateCreated: new Date(),
         trendDirection: direction,
     }
-    
-    try 
-    {
+
+    try {
         // Load existing entries
         const existingEntries = await LoadEntriesAsync();
 
@@ -91,11 +94,10 @@ export async function saveEntryAsync(mood: eMoodType): Promise<void>
         // Save updated entries back to AsyncStorage in JSON format
         await AsyncStorage.setItem(MOOD_KEY, JSON.stringify(updatedEntries));
     }
-    catch (e) 
-    {
+    catch (e) {
         console.error("Error saving entry to storage: ", e);
     }
-  
+
 }
 
 export async function getEntryByIdAsync(id: string): Promise<tMoodEntry | null> 
@@ -107,7 +109,7 @@ export async function getEntryByIdAsync(id: string): Promise<tMoodEntry | null>
     {
         // Load all entries
         const entries = await LoadEntriesAsync();
-        
+
         // Arrow func to find entry by ID using higher-order function find
         const entry = entries.find(e => e.id === id);
 
@@ -122,8 +124,9 @@ export async function getEntryByIdAsync(id: string): Promise<tMoodEntry | null>
 }
 
 
-// Inner function to calculate trend direction based on new and previous mood
-async function calculateTrendDirection(newMood: eMoodType, prevMood?: eMoodType): Promise<eTrendDirection> {
+// helper function to calculate trend direction based on new and previous mood
+async function calculateTrendDirection(newMood: eMoodType, prevMood?: eMoodType): Promise<eTrendDirection> 
+{
     try 
     {
         // Early return if no previous mood
@@ -142,5 +145,16 @@ async function calculateTrendDirection(newMood: eMoodType, prevMood?: eMoodType)
         console.error("Error calculating trend direction: ", e);
         return eTrendDirection.None;
     }
-    
+
+}
+
+// Helper function to convert date strings back to Date objects after loading from AsyncStorage
+async function convertBackToDate(entries: tMoodEntry[]): Promise<tMoodEntry[]> 
+{
+    // Map through the entries and convert date strings to Date objects
+    return entries.map(entry => ({
+        ...entry,
+        dateCreated: new Date(entry.dateCreated),
+        dateModified: entry.dateModified ? new Date(entry.dateModified) : undefined,
+    }));
 }

@@ -1,4 +1,4 @@
-import Ionicons from "@react-native-vector-icons/ionicons";
+import {FontAwesome6} from "@react-native-vector-icons/fontawesome6"
 import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 
 
@@ -17,7 +17,7 @@ export default function HeaderCloseButton({ onPress, color = '#000', size = 24 }
     // Return a touchable icon button
     return (
         <TouchableOpacity onPress={onPress} style={styles.button}>
-            <Ionicons name="close" size={size} color={color} />
+            <FontAwesome6 name="cross" size={size} color={color} iconStyle="solid" />
         </TouchableOpacity>
     )
 

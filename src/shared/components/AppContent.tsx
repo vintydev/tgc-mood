@@ -4,6 +4,7 @@ import RootNavigator from "../../navigation/RootNavigator";
 
 // This functional component serves as the main content area of the app, including status bar and navigation
 function AppContent(): React.JSX.Element {
+    console.log("Rendering AppContent");
     return (
         <View style={{ flex: 1 }}>
             {!isiOS() && ( // Only show status bar on Android for better appearance, ios already handles it natively
