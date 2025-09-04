@@ -18,6 +18,7 @@ export default function RootNavigator() {
             screenOptions={{
                 gestureEnabled: false,
                 animation: 'slide_from_right',
+                headerShown: false, // Default to no headers on screens
             }}
         >
             <RootStack.Screen

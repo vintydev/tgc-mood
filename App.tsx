@@ -14,10 +14,10 @@ function App(): JSX.Element {
   // Main return statement positioned near the top of the component
   return (
     <SafeAreaProvider>
-
+      
       <NavigationContainer>
 
-        <RootNavigator />
+        <AppContent/>
 
       </NavigationContainer>
 

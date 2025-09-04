@@ -37,15 +37,21 @@ export async function LoadEntriesAsync(): Promise<tMoodEntry[]>
     }
 }
 
+// Load the previous entry (most recent by dateCreated) or null if none exist
 export async function LoadPreviousEntryAsync(): Promise<tMoodEntry | null> 
 {
     try 
     {
+        // Get entries
         const entries = await LoadEntriesAsync();
+
+        // If no entries, early return null
         if (entries.length === 0) return null;
 
         // Sort entries by dateCreated descending to get the most recent entry
         const sortedEntries = entries.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime());
+
+        // Return the most recent entry (first in sorted array, since sorted descending)
         return sortedEntries[0];
     }
     catch (e) 
@@ -55,6 +61,7 @@ export async function LoadPreviousEntryAsync(): Promise<tMoodEntry | null>
     }
 }
 
+// Save a new mood entry, calculating trend direction based on previous entry if it exists
 export async function saveEntryAsync(mood: eMoodType): Promise<void>
  {
     // Early return if entry is null or otherwise invalid
@@ -91,6 +98,28 @@ export async function saveEntryAsync(mood: eMoodType): Promise<void>
   
 }
 
+export async function getEntryByIdAsync(id: string): Promise<tMoodEntry | null> 
+{
+    // Early return if no ID provided
+    if (!id) return null;
+
+    try 
+    {
+        // Load all entries
+        const entries = await LoadEntriesAsync();
+        
+        // Arrow func to find entry by ID using higher-order function find
+        const entry = entries.find(e => e.id === id);
+
+        // Return found entry or null if not found
+        return entry ?? null;
+    }
+    catch (e) 
+    {
+        console.error("Error retrieving entry by ID: ", e);
+        return null;
+    }
+}
 
 
 // Inner function to calculate trend direction based on new and previous mood
@@ -109,6 +138,7 @@ async function calculateTrendDirection(newMood: eMoodType, prevMood?: eMoodType)
     }
     catch (e) 
     {
+        // Any error, return no data
         console.error("Error calculating trend direction: ", e);
         return eTrendDirection.None;
     }

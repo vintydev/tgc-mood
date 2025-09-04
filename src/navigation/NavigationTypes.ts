@@ -1,5 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { eRootRoute, eTabRoute } from '../shared/types/eRoutes';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps } from '@react-navigation/native';
 
 // Root stack routes )
 export type tRootStackParamList =
@@ -22,10 +24,12 @@ export type tTabStackParamList =
 // Typed props for screens
 export type tRootStackScreenProps<T extends keyof tRootStackParamList> =
     NativeStackScreenProps<tRootStackParamList, T>;
-
 export type tTabStackScreenProps<T extends keyof tTabStackParamList> =
     NativeStackScreenProps<tTabStackParamList, T>;
 
-// Composite props (when a tab screen also sits inside the root stack)
+// Composite props (when a tab screen also sits inside the root stack, prevents prop type errors)
 export type tCompositeTabScreenProps<T extends keyof tTabStackParamList> =
-    tTabStackScreenProps<T> & tRootStackScreenProps<keyof tRootStackParamList>;
+    CompositeScreenProps<
+        BottomTabScreenProps<tTabStackParamList, T>,
+        tRootStackScreenProps<keyof tRootStackParamList>
+    >;
