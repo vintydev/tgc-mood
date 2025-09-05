@@ -5,9 +5,9 @@ type tMoodEntry =
     {
         id: string;
         selectedMood: eMoodType;
+        emoji?: string;
         dateCreated: Date;
         dateModified?: Date;
-        trendDirection: eTrendDirection;
     };
 
 export default tMoodEntry;

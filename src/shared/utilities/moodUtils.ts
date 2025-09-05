@@ -26,3 +26,10 @@ export const getMoodById = (id: eMoodType) =>
     return MOODS_BY_ID[id];
 }
 
+// Function to get emoji by Mood ID
+export const getEmojiByMoodId = (id: eMoodType): string =>
+{
+    const mood = MOODS_BY_ID[id];
+    return mood ? mood.emoji : "";
+}
+

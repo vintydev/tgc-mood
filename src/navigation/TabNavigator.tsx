@@ -6,7 +6,8 @@ import { tTabStackParamList } from "./NavigationTypes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomLinearGradient from "../shared/components/CustomLinearGradient";
 import { tabBgWithOpacity, getTabIcon } from "../shared/utilities/tabUtils";
-import MoodStatisticsScreen from "../screens/MoodStatisticsScreen";
+import MoodHubScreen from "../screens/MoodHubScreen";
+import { useState } from "react";
 
 
 const Tab = createBottomTabNavigator<tTabStackParamList>();
@@ -14,6 +15,11 @@ const Tab = createBottomTabNavigator<tTabStackParamList>();
 // This function sets up the btm tab navigator with its accompanying screens
 // Avoids magic strings by using enum for route names
 export default function TabNavigator() {
+
+    // State to track the currently selected tab (default to MoodTracker, which is home)
+    const [selectedTab, setSelectedTab] = useState<eTabRoute>(eTabRoute.MoodTracker);
+
+    
     return (
         <Tab.Navigator
             // Default to MoodTracker tab (home)
@@ -42,8 +48,8 @@ export default function TabNavigator() {
             />
             <Tab.Screen
                 name={eTabRoute.Statistics}
-                component={MoodStatisticsScreen} // Placeholder, replace with actual StatisticsScreen when available
-                options={{ title: 'Statistics' }}
+                component={MoodHubScreen}
+                options={{ title: 'Mood Hub' }}
             />
             {/*
             <Tab.Screen

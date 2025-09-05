@@ -19,7 +19,8 @@ function MoodFlatList(props: tMoodFlatListProps) {
     const { selectedMood, handleSelectMood, handleConfirmMood, moodLogged} = props;
     const [selectedMoodEmoji, setSelectedMoodEmoji] = useState<string | null>(null);
 
-    console.log(moodLogged, "Mood logged prop value.");
+    // Data for FlatList
+    const data = ALL_MOODS;
 
     // Helper to get mood object by id
     useEffect(() => {
@@ -35,15 +36,13 @@ function MoodFlatList(props: tMoodFlatListProps) {
         }
     }, [selectedMood]);
 
-    // Data for FlatList
-    const data = ALL_MOODS;
-
     return (
         <FlatList
             data={data}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.containerButton}
             showsHorizontalScrollIndicator={false}
+            
             ListHeaderComponent={
 
                 <Text style={[styles.welcomeFont, { fontSize: 16, fontFamily: Fonts.SFProLight }]}>
