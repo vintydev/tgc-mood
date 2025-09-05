@@ -43,7 +43,9 @@ export async function LoadEntriesAsync(): Promise<tMoodEntry[]>
 // Load the previous entry (most recent by dateCreated) or null if none exist
 export async function LoadPreviousEntryAsync(): Promise<tMoodEntry | null> 
 {
-    try {
+
+    try 
+    {
         // Get entries
         const entries = await LoadEntriesAsync();
 
@@ -52,8 +54,9 @@ export async function LoadPreviousEntryAsync(): Promise<tMoodEntry | null>
         // If no entries, early return null
         if (entries.length === 0) return null;
 
-        // Sort entries by dateCreated descending to get the most recent entry
-        const sortedEntries = entries.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        // Sort entries by dateCreated descending to get the most recent entry, then sort
+        const sortedEntries = await convertBackToDate(entries);
+        sortedEntries.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime());
 
         // Return the most recent entry (first in sorted array, since sorted descending)
         return sortedEntries[0];

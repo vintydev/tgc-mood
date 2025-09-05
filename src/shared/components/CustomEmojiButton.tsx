@@ -10,14 +10,14 @@ const ANIMATION_DURATION = 100; // in ms
 
 // Define props
 export type tCustomEmojiButtonProps =
-    {
+{
         emoji: string;
         label?: string;
         onPress?: () => void;
         style?: ViewStyle;
         selected?: boolean;
         disabled?: boolean;
-    }
+}
 
 // Touch friendly emoji button component with a small animation on press
 export default function CustomEmojiButton(props: tCustomEmojiButtonProps) {
@@ -36,6 +36,7 @@ export default function CustomEmojiButton(props: tCustomEmojiButtonProps) {
     return (
         <Pressable
             disabled={disabled}
+            
             onPressIn={() => animateIn(scale, opacity)}
             onPressOut={() => animateOut(scale, opacity)}
             onPress={onPress}
@@ -43,7 +44,8 @@ export default function CustomEmojiButton(props: tCustomEmojiButtonProps) {
                 styles.wrapper,
                 style,
                 pressed && { opacity: 0.75},
-                disabled && { opacity: 0.5 }
+                disabled && { opacity: 0.5 },
+                selected && { borderColor: '#6200ee', borderWidth: 2}
 
             ]}
         >
@@ -131,11 +133,6 @@ const styles = StyleSheet.create<{
         opacity: 0.5
     },
 });
-
-
-function handleOnPress() {
-    console.log("Button pressed!");
-}
 
 
 // Component related logic (animations)

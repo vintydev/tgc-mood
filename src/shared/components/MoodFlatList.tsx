@@ -1,9 +1,10 @@
 import { FlatList, StyleSheet, Text } from "react-native";
 import { Fonts } from "../constants/fonts";
-import { ALL_MOODS } from "../utilities/moodUtils";
+import { ALL_MOODS, getMoodById } from "../utilities/moodUtils";
 import CustomEmojiButton from "./CustomEmojiButton";
 import eMoodType from "../types/mood/eMoodType";
 import ConfirmButton from "./ConfirmButton";
+import { useEffect, useState } from "react";
 
 type tMoodFlatListProps = {
     selectedMood: eMoodType | null;
@@ -14,9 +15,27 @@ type tMoodFlatListProps = {
 }
 
 function MoodFlatList(props: tMoodFlatListProps) {
-    
-    const { selectedMood, handleSelectMood, handleConfirmMood, moodLogged, confirmText } = props;
 
+    const { selectedMood, handleSelectMood, handleConfirmMood, moodLogged} = props;
+    const [selectedMoodEmoji, setSelectedMoodEmoji] = useState<string | null>(null);
+
+    console.log(moodLogged, "Mood logged prop value.");
+
+    // Helper to get mood object by id
+    useEffect(() => {
+        if (selectedMood) 
+        {
+            const mood = getMoodById(selectedMood);
+            setSelectedMoodEmoji(mood.emoji);
+
+        }
+        else 
+        {
+            setSelectedMoodEmoji(null);
+        }
+    }, [selectedMood]);
+
+    // Data for FlatList
     const data = ALL_MOODS;
 
     return (
@@ -28,21 +47,22 @@ function MoodFlatList(props: tMoodFlatListProps) {
             ListHeaderComponent={
 
                 <Text style={[styles.welcomeFont, { fontSize: 16, fontFamily: Fonts.SFProLight }]}>
-                    Today, you are feeling {selectedMood ? selectedMood.toLowerCase() + "." : "..."}
+                    Today, you {moodLogged ? "were" : "are"} feeling {""}
+                    {selectedMood ? selectedMood.toLowerCase() + ` ${selectedMoodEmoji}` : moodLogged ? `${selectedMood}` : "...?"}
                 </Text>
 
             }
             ListFooterComponent={
                 <ConfirmButton
-                    title={moodLogged ? "Mood already logged for today!" : "Confirm Mood"}
+                    title={moodLogged ? "Mood already logged today!" : "Confirm Mood"}
                     onPress={() => {
                         handleConfirmMood ? handleConfirmMood(selectedMood!) : null
                     }}
-                    disabled={selectedMood === null || moodLogged}
+                    disabled={moodLogged || !selectedMood}
                     buttonStyle={{ marginTop: 20 }}
                 />
 
-            }   
+            }
             renderItem={({ item }) => (
                 <CustomEmojiButton
                     emoji={item.emoji}

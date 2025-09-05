@@ -21,7 +21,6 @@ function App(): JSX.Element {
 
       </NavigationContainer>
 
-
     </SafeAreaProvider>
 
   );
