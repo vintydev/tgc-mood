@@ -1,9 +1,10 @@
 import { JSX } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { tCompositeTabScreenProps } from "../navigation/NavigationTypes";
 import CustomLinearGradient from "../shared/components/CustomLinearGradient";
 import { eTabRoute } from "../shared/types/eRoutes";
 import { saveEntryAsync, LoadEntriesAsync, LoadPreviousEntryAsync, getEntryByIdAsync } from "../shared/utilities/storageUtils";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 type tProps = tCompositeTabScreenProps<eTabRoute.Statistics>;
